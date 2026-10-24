@@ -1,0 +1,46 @@
+name: Bug report
+description: Something the scan or the Repair Console did or didn't do that it should have.
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: PC Health Scan version
+      description: Shown in the report footer and the scan's start-up banner.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 Pro 24H2
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Mode
+      options: [Quick, Standard, Deep, Repair Console]
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: scan-log.txt / scanner-errors.txt excerpt (optional)
+      description: Attach the log around the time of the problem. Remove anything personal first.
+      render: text
+  - type: checkboxes
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues
+          required: true
+        - label: This is not a security problem (those go through SECURITY.md)
+          required: true

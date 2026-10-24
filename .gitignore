@@ -1,0 +1,3 @@
+# scan results describe a real PC (software, accounts, network) - never commit
+Reports/
+*.zip

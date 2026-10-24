@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Repair Console - DESKTOP-SAMPLE</title><style>:root{--bg:#f5f6f8;--panel:#fff;--text:#1c2230;--muted:#5f6878;--border:#e1e4ea;--accent:#2d6cdf;--code:#eef0f4;
+--critical:#a1162a;--critical-bg:#fde8ec;--high:#c03d0b;--high-bg:#fff0e5;--medium:#946200;--medium-bg:#fff6d9;--low:#2457c5;--low-bg:#e9f0ff;--info:#5f6878;--info-bg:#eef0f4;--good:#167a3e;--good-bg:#e5f6ec}
+@media (prefers-color-scheme: dark){:root{--bg:#101318;--panel:#191c23;--text:#e5e8ee;--muted:#98a1b1;--border:#2a2f3a;--accent:#76a5ff;--code:#232833;
+--critical:#ff7085;--critical-bg:#3b1219;--high:#ff9b63;--high-bg:#3a1f10;--medium:#f0c34e;--medium-bg:#33290c;--low:#86aaff;--low-bg:#162342;--info:#98a1b1;--info-bg:#222733;--good:#5fd48d;--good-bg:#11301d}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.top{background:linear-gradient(135deg,#1d3f8f,#2d6cdf);color:#fff;padding:28px 0 22px}
+header .brand{font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+header h1{margin:4px 0 6px;font-size:30px}header .meta{font-size:14px;opacity:.92}header .warn{color:#ffe08a}
+h2{font-size:21px;margin:30px 0 12px}h3{font-size:16px;margin:18px 0 8px}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:-14px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.score{text-align:center}.score .lbl{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.score .grade{font-size:44px;font-weight:700;line-height:1.1}.score .num{color:var(--muted);font-size:13px}
+.tone-good .grade{color:var(--good)}.tone-low .grade{color:var(--low)}.tone-medium .grade{color:var(--medium)}.tone-high .grade{color:var(--high)}.tone-critical .grade{color:var(--critical)}
+.counts{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;align-content:center;grid-column:span 2}
+.cnt{display:flex;justify-content:space-between;align-items:center}.cnt b{font-size:20px}
+.exec{background:var(--panel);border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin:16px 0}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.toc a{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--border);color:var(--text);text-decoration:none}
+.toc a:hover{border-color:var(--accent)}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.pill.critical{background:var(--critical-bg);color:var(--critical)}.pill.high{background:var(--high-bg);color:var(--high)}.pill.medium{background:var(--medium-bg);color:var(--medium)}
+.pill.low{background:var(--low-bg);color:var(--low)}.pill.info{background:var(--info-bg);color:var(--info)}.pill.good{background:var(--good-bg);color:var(--good)}
+.shead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:999px;padding:4px 12px;cursor:pointer;font:inherit;font-size:13px}
+.chip.off{opacity:.4;text-decoration:line-through}
+.finding{background:var(--panel);border:1px solid var(--border);border-left:5px solid var(--info);border-radius:10px;padding:12px 16px;margin:10px 0}
+.finding.sev-critical{border-left-color:var(--critical)}.finding.sev-high{border-left-color:var(--high)}.finding.sev-medium{border-left-color:var(--medium)}.finding.sev-low{border-left-color:var(--low)}
+.finding.isdone{opacity:.55}.finding.isdone h3{text-decoration:line-through}
+.finding h3{margin:6px 0 4px}.finding p{margin:6px 0}
+.fhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.cat{font-size:12px;color:var(--muted)}
+.done{margin-left:auto;font-size:13px;cursor:pointer;user-select:none}
+.why{color:var(--muted)}.fix{background:var(--good-bg);border-radius:6px;padding:6px 10px}
+.ev summary{cursor:pointer;color:var(--muted);font-size:13px}.ev ul{margin:6px 0;padding-left:18px}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font:12.5px/1.45 Consolas,"Cascadia Mono",monospace;word-break:break-all}
+.more{font-size:13px;color:var(--accent);text-decoration:none}
+.infos{margin-top:14px}.infos>summary{cursor:pointer;color:var(--muted);font-weight:600}
+.passes{list-style:none;padding:0;columns:2 380px;column-gap:24px}.passes li{break-inside:avoid;padding:3px 0}.ok{color:var(--good);font-weight:700}
+.muted{color:var(--muted)}
+#notes textarea{width:100%;font:14px/1.5 Consolas,"Cascadia Mono",monospace;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btns button{font:inherit;font-size:14px;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text);cursor:pointer}
+.btns button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.actions{padding-left:18px}
+details.sec{background:var(--panel);border:1px solid var(--border);border-radius:10px;margin:10px 0}
+details.sec>summary{cursor:pointer;padding:12px 16px;display:flex;align-items:center;gap:10px;list-style:none}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::before{content:"\25B8";color:var(--muted);transition:transform .15s}details.sec[open]>summary::before{transform:rotate(90deg)}
+.stitle{font-weight:600;font-size:17px}.sbody{padding:0 16px 16px;border-top:1px solid var(--border)}
+.intro{color:var(--muted)}.bnote{color:var(--muted);font-size:13.5px;margin:4px 0 8px}
+.note{padding:8px 12px;border-radius:6px;background:var(--info-bg)}.note.tone-warn{background:var(--medium-bg)}.note.tone-bad{background:var(--high-bg)}.note.tone-good{background:var(--good-bg)}
+.empty{color:var(--muted);font-style:italic}
+.count{font-size:12px;color:var(--muted);font-weight:400;background:var(--code);padding:1px 7px;border-radius:999px}
+.tfilter{width:100%;max-width:340px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin:2px 0 8px;font:inherit;font-size:14px}
+.tw{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
+table.data{border-collapse:collapse;width:100%;font-size:13px}
+table.data th{position:sticky;top:0;background:var(--code);text-align:left;padding:7px 9px;cursor:pointer;white-space:nowrap;user-select:none}
+table.data th[data-sort=asc]::after{content:" \25B4"}table.data th[data-sort=desc]::after{content:" \25BE"}
+table.data td{padding:6px 9px;border-top:1px solid var(--border);vertical-align:top;max-width:520px;word-break:break-word}
+table.kv td:first-child{width:240px;color:var(--muted);white-space:nowrap}
+tr.f-critical td{background:var(--critical-bg)}tr.f-high td{background:var(--high-bg)}tr.f-medium td{background:var(--medium-bg)}tr.f-low td{background:var(--low-bg)}tr.f-good td{background:var(--good-bg)}
+a.hash{color:var(--accent);font-family:Consolas,monospace}
+footer{margin:30px 0 40px;font-size:13px}footer summary{cursor:pointer;color:var(--muted)}
+@media (max-width:640px){header h1{font-size:24px}.counts{grid-column:span 1;grid-template-columns:1fr}table.kv td:first-child{white-space:normal;width:auto}}
+@media print{header.top{background:#1d3f8f!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.btns,.tfilter,.chips,.toc,#notes textarea:placeholder-shown{display:none}details.sec{break-inside:auto}}</style><style>.item{background:var(--panel);border:1px solid var(--border);border-left:5px solid var(--info);border-radius:10px;padding:12px 16px;margin:10px 0}
+.item.sev-critical{border-left-color:var(--critical)}.item.sev-high{border-left-color:var(--high)}.item.sev-medium{border-left-color:var(--medium)}.item.sev-low{border-left-color:var(--low)}
+.item.ok{border-left-color:var(--good)}.item.fail{outline:2px solid var(--high)}.item.undone{opacity:.75}
+.steps{margin:8px 0;padding:0;list-style:none}.steps li{display:flex;gap:8px;align-items:flex-start;padding:3px 0;font-size:14px}
+.steps input{margin-top:4px}.risk{font-size:11px;padding:1px 7px;border-radius:999px;white-space:nowrap}
+.risk.safe{background:var(--good-bg);color:var(--good)}.risk.caution{background:var(--medium-bg);color:var(--medium)}.risk.guided{background:var(--low-bg);color:var(--low)}
+.offnote{font-size:12px;color:var(--muted);margin:2px 0 0}
+.ibtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;align-items:center}
+.ibtns button,.ubtn{font:inherit;font-size:13.5px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text);cursor:pointer}
+.ibtns button.apply{background:var(--accent);border-color:var(--accent);color:#fff}.ibtns button.undo{border-color:var(--medium);color:var(--medium)}
+.ibtns button:disabled,.ubtn:disabled{opacity:.5;cursor:default}
+.status{font-size:13px;color:var(--muted)}.status.ok{color:var(--good)}.status.fail{color:var(--high)}.status.run{color:var(--accent)}
+pre.log{display:none;background:#0d1117;color:#d7dde6;border-radius:8px;padding:10px 12px;margin:8px 0 0;font:12.5px/1.5 Consolas,"Cascadia Mono",monospace;max-height:340px;overflow:auto;white-space:pre-wrap;word-break:break-all}
+pre.log.show{display:block}pre.log .sim{color:#9fb3c8}pre.log .bad{color:#ff8a8a}pre.log .hd{color:#7ee787;font-weight:600}pre.log .un{color:#f0c34e;font-weight:600}
+.banner{background:var(--medium-bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin:14px 0}
+.banner.sim{background:var(--low-bg)}
+.topbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.topbar button{font:inherit;font-size:14px;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text);cursor:pointer}
+.topbar button.undoall{border-color:var(--medium);color:var(--medium)}
+.topbar label{font-size:14px;display:flex;gap:6px;align-items:center}
+.sumline{font-size:14px;color:var(--muted)}
+#undo-panel{display:none;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin:10px 0}
+#undo-panel.show{display:block}
+#undo-panel table{width:100%;border-collapse:collapse;font-size:13.5px}#undo-panel td,#undo-panel th{padding:6px 8px;border-top:1px solid var(--border);text-align:left;vertical-align:top}
+#undo-panel tr.done td{opacity:.55}#undo-panel .sess{font-weight:600;padding-top:14px;border-top:none}
+.muted{color:var(--muted)}</style></head><body><header class='top'><div class='wrap'><div class='brand'>PC Health Scan</div><h1>Repair Console - DESKTOP-SAMPLE</h1><div class='meta'>Windows 11 Pro 24H2 (build 26100.2314) &middot; scan from 2026-10-24 18:40 (2 min ago) &middot; 10 repairable issue(s)</div></div></header><main class='wrap'><div class='banner sim'><b>How this works.</b> <b>Simulate</b> shows exactly what a fix would do without changing anything. <b>Apply</b> does it with a live log.
+Repairs run <b>one at a time</b>; clicking several just queues them. <b>Every change can be undone</b>: an applied fix gets an <b>Undo this fix</b> button,
+and <b>Undo &amp; restore</b> (top) lists every change ever made on this PC - including earlier sessions - with its own Undo button.
+Removed files go to a protected quarantine instead of being deleted, settings and registry keys are backed up first, and one System Restore point is made per session as a last resort.
+Steps marked <span class='risk caution'>caution</span> remove or disable something. Steps that start <b>unticked</b> are ones where the item may well be legitimate - only tick them if you know it is unwanted.
+<span class='risk guided'>guided</span> steps only open the right settings page.</div>
+<div class='topbar'><button id='undo-toggle' class='undoall'>Undo &amp; restore...</button><button id='rstrui'>Open System Restore</button><button id='sim-all'>Simulate everything</button><button id='apply-safe'>Apply all ticked "safe" steps</button><label><input type='checkbox' id='autoscroll' checked> Auto-scroll logs</label><span class='sumline' id='sum'></span><button id='finish' style='margin-left:auto'>Finish &amp; close console</button></div>
+<section id='undo-panel'><div style='display:flex;gap:10px;align-items:center;flex-wrap:wrap'><h2 style='margin:4px 0'>Undo &amp; restore</h2><button class='ubtn' id='undo-session'>Undo everything from this session</button><button class='ubtn' id='undo-refresh'>Refresh</button><span class='muted' id='undo-store'></span></div>
+<p class='muted'>Newest first. Undoing a change puts back exactly what was there before it (registry values, tasks, services, files from quarantine, firewall rules, DNS, Defender settings...). Uninstalls and deleted temp files cannot be reversed here - use <b>Open System Restore</b> for those.</p>
+<div id='undo-list'>Loading...</div><pre class='log' id='log-undo'></pre></section><article class='item sev-critical' id='r0' data-id='r0'><div class='fhead'><span class='pill critical'>Critical</span><span class='cat'>Browser</span><span class='status' id='st-r0'></span></div><h3>Chrome has a forced policy from &quot;unknown-publisher&quot;</h3><p class='detail'>A policy at HKLM\SOFTWARE\Policies\Google\Chrome\ sets a different homepage and a different search engine, and locks them so you cannot change them from Settings.</p><ul class='steps'><li><input type='checkbox' data-step='0' checked> <span class='risk caution'>caution</span><span>Delete the Chrome hijack policy key</span></li><li><input type='checkbox' data-step='1' checked> <span class='risk guided'>guided</span><span>Open Chrome Settings to set your real search engine</span></li></ul><div class='ibtns'><button class='sim'>Simulate</button><button class='apply'>Apply selected</button><button class='undo' style='display:none'>Undo this fix</button><button class='showlog'>Show log</button></div><pre class='log' id='log-r0'></pre></article><article class='item sev-critical' id='r1' data-id='r1'><div class='fhead'><span class='pill critical'>Critical</span><span class='cat'>Malware &amp; PUPs</span><span class='status' id='st-r1'></span></div><h3>PC App Store (Fast Corporation) adware is installed</h3><p class='detail'>All of its unique parts are present: C:\Users\Sam\PCAppStore\, PCAppStore.exe is running, four scheduled tasks named PCAppStore / PcAppStoreUpdater / Watchdog, and startup entries under Run.</p><ul class='steps'><li><input type='checkbox' data-step='0' checked> <span class='risk caution'>caution</span><span>Remove PC App Store completely (recommended)</span></li></ul><div class='ibtns'><button class='sim'>Simulate</button><button class='apply'>Apply selected</button><button class='undo' style='display:none'>Undo this fix</button><button class='showlog'>Show log</button></div><pre class='log' id='log-r1'></pre></article><article class='item sev-high' id='r2' data-id='r2'><div class='fhead'><span class='pill high'>High</span><span class='cat'>Antivirus</span><span class='status' id='st-r2'></span></div><h3>Microsoft Defender has an exclusion for the whole C:\ drive</h3><p class='detail'>Folder exclusion: C:\. With this in place, Defender scans nothing on your Windows drive.</p><ul class='steps'><li><input type='checkbox' data-step='0' checked> <span class='risk caution'>caution</span><span>Remove the C:\ exclusion</span></li><li><input type='checkbox' data-step='1' checked> <span class='risk safe'>safe</span><span>Run a Defender full scan now (slow; up to a few hours)</span></li></ul><div class='ibtns'><button class='sim'>Simulate</button><button class='apply'>Apply selected</button><button class='undo' style='display:none'>Undo this fix</button><button class='showlog'>Show log</button></div><pre class='log' id='log-r2'></pre></article><article class='item sev-high' id='r3' data-id='r3'><div class='fhead'><span class='pill high'>High</span><span class='cat'>Persistence</span><span class='status' id='st-r3'></span></div><h3>Scheduled task &quot;SystemHealthHelper&quot; runs an unsigned program from a user folder</h3><p class='detail'>Task &quot;SystemHealthHelper&quot; starts at every logon and runs C:\Users\Sam\AppData\Roaming\SysHelper\helper.exe (not signed). Not a Windows task; name designed to look like one.</p><ul class='steps'><li><input type='checkbox' data-step='0' checked> <span class='risk caution'>caution</span><span>Delete the scheduled task</span></li><li><input type='checkbox' data-step='1' checked> <span class='risk caution'>caution</span><span>Quarantine C:\Users\Sam\AppData\Roaming\SysHelper\</span></li></ul><div class='ibtns'><button class='sim'>Simulate</button><button class='apply'>Apply selected</button><button class='undo' style='display:none'>Undo this fix</button><button class='showlog'>Show log</button></div><pre class='log' id='log-r3'></pre></article><article class='item sev-medium' id='r4' data-id='r4'><div class='fhead'><span class='pill medium'>Medium</span><span class='cat'>Software</span><span class='status' id='st-r4'></span></div><h3>7-Zip 19.00 is years out of date</h3><p class='detail'>7-Zip 19.00 (released 2019-02-21) is installed. The current version is 24.09.</p><ul class='steps'><li><input type='checkbox' data-step='0' checked> <span class='risk guided'>guided</span><span>Open the 7-Zip download page</span></li></ul><div class='ibtns'><button class='sim'>Simulate</button><button class='apply'>Apply selected</button><button class='undo' style='display:none'>Undo this fix</button><button class='showlog'>Show log</button></div><pre class='log' id='log-r4'></pre></article><article class='item sev-medium' id='r5' data-id='r5'><div class='fhead'><span class='pill medium'>Medium</span><span class='cat'>Stability</span><span class='status' id='st-r5'></span></div><h3>3 blue screens in the last 14 days, all with the same stop code</h3><p class='detail'>DRIVER_IRQL_NOT_LESS_OR_EQUAL (0xd1). Dump file points to RTWLANU.sys (Realtek Wi-Fi).</p><ul class='steps'><li><input type='checkbox' data-step='0' checked> <span class='risk guided'>guided</span><span>Open Device Manager -&gt; Network adapters to update/roll back the driver</span></li></ul><div class='ibtns'><button class='sim'>Simulate</button><button class='apply'>Apply selected</button><button class='undo' style='display:none'>Undo this fix</button><button class='showlog'>Show log</button></div><pre class='log' id='log-r5'></pre></article><article class='item sev-medium' id='r6' data-id='r6'><div class='fhead'><span class='pill medium'>Medium</span><span class='cat'>Updates</span><span class='status' id='st-r6'></span></div><h3>Windows Update is paused and the pause is 32 days old</h3><p class='detail'>PauseUpdatesExpiryTime was set at 32 days ago. New updates will not install while this is set.</p><ul class='steps'><li><input type='checkbox' data-step='0' checked> <span class='risk safe'>safe</span><span>Clear &quot;pause updates&quot;</span></li><li><input type='checkbox' data-step='1' checked> <span class='risk safe'>safe</span><span>Scan for updates now</span></li></ul><div class='ibtns'><button class='sim'>Simulate</button><button class='apply'>Apply selected</button><button class='undo' style='display:none'>Undo this fix</button><button class='showlog'>Show log</button></div><pre class='log' id='log-r6'></pre></article><article class='item sev-medium' id='r7' data-id='r7'><div class='fhead'><span class='pill medium'>Medium</span><span class='cat'>Security Settings</span><span class='status' id='st-r7'></span></div><h3>User Account Control (UAC) is set to &quot;Never notify&quot;</h3><p class='detail'>ConsentPromptBehaviorAdmin = 0 and EnableLUA = 1. UAC is on but the prompt never shows.</p><ul class='steps'><li><input type='checkbox' data-step='0' checked> <span class='risk safe'>safe</span><span>Reset UAC to the Windows default</span></li></ul><div class='ibtns'><button class='sim'>Simulate</button><button class='apply'>Apply selected</button><button class='undo' style='display:none'>Undo this fix</button><button class='showlog'>Show log</button></div><pre class='log' id='log-r7'></pre></article><article class='item sev-medium' id='r8' data-id='r8'><div class='fhead'><span class='pill medium'>Medium</span><span class='cat'>Accounts &amp; Access</span><span class='status' id='st-r8'></span></div><h3>Automatic sign-in is on, and the password is in the registry in clear text</h3><p class='detail'>Winlogon AutoAdminLogon = 1 for user Sam. DefaultPassword is set and readable by any administrator.</p><ul class='steps'><li><input type='checkbox' data-step='0' checked> <span class='risk safe'>safe</span><span>Turn automatic sign-in off</span></li><li><input type='checkbox' data-step='1' checked> <span class='risk caution'>caution</span><span>Delete the stored password</span></li></ul><div class='ibtns'><button class='sim'>Simulate</button><button class='apply'>Apply selected</button><button class='undo' style='display:none'>Undo this fix</button><button class='showlog'>Show log</button></div><pre class='log' id='log-r8'></pre></article><article class='item sev-low' id='r9' data-id='r9'><div class='fhead'><span class='pill low'>Low</span><span class='cat'>Performance</span><span class='status' id='st-r9'></span></div><h3>14 programs start with Windows and together add 48 seconds to boot</h3><p class='detail'>Spotify, Steam, Discord, OneDrive and Teams each delay boot by more than 5 seconds.</p><ul class='steps'><li><input type='checkbox' data-step='0' checked> <span class='risk guided'>guided</span><span>Open Task Manager Startup tab</span></li></ul><div class='ibtns'><button class='sim'>Simulate</button><button class='apply'>Apply selected</button><button class='undo' style='display:none'>Undo this fix</button><button class='showlog'>Show log</button></div><pre class='log' id='log-r9'></pre></article><footer><p class='muted'>PC Health Scan by TCPeep (github.com/TCPeep/PC-Health-Scan, free software under GPL-3.0)</p></footer></main><script>var TOKEN="DEMO-TOKEN-NOT-WIRED";var FORCED=false;(function(){
+var H={'X-Repair':'1'};
+function api(path,opts){opts=opts||{};var u=path+(path.indexOf('?')>=0?'&':'?')+'t='+encodeURIComponent(TOKEN);return void(u,{method:opts.method||'GET',headers:H}).then(function(r){return r.json()})}
+var busy={},lastJob={},totals={ok:0,fail:0};
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+function fmt(line){var c='';if(line.indexOf('[SIMULATE]')>=0)c='sim';if(/FAILED|REFUSED|could not|NOT restored|refused/i.test(line))c='bad';if(line.indexOf('UNDO')>=0)c='un';else if(line.indexOf('####')>=0||line.indexOf('== ')>=0)c='hd';return c?'<span class="'+c+'">'+esc(line)+'</span>':esc(line)}
+function sumline(){document.getElementById('sum').textContent='Applied OK: '+totals.ok+(totals.fail?'  Failed: '+totals.fail:'')}
+/* follow a queued/running job's log until it finishes */
+function follow(job,log,st,label){var since=0;return new Promise(function(res){(function poll(){console.log('demo-only: ', '/api/log?job='+job+'&since='+since).then(function(l){
+  if(l.lines&&l.lines.length){log.innerHTML+=l.lines.map(fmt).join('\n')+'\n';if(document.getElementById('autoscroll').checked)log.scrollTop=log.scrollHeight;since=l.next}
+  if(!l.done){if(st){if(l.status==='queued'){st.textContent='Queued (#'+l.position+') - waiting for the repair before it';st.className='status'}else{st.textContent=label+'...';st.className='status run'}}setTimeout(poll,500)}else res(l)
+ }).catch(function(){setTimeout(poll,1500)})})()})}
+function lockCard(card,on){card.querySelectorAll('button').forEach(function(b){if(!b.classList.contains('showlog'))b.disabled=on})}
+function run(card,mode){var id=card.getAttribute('data-id');if(busy[id])return Promise.resolve();
+ var steps=[].slice.call(card.querySelectorAll('input[data-step]')).filter(function(c){return c.checked}).map(function(c){return c.getAttribute('data-step')});
+ if(!steps.length){if(!run.quiet)alert('Tick at least one step.');return Promise.resolve()}
+ if(mode==='apply'&&!run.quiet){var caution=[].slice.call(card.querySelectorAll('input[data-step]:checked')).some(function(c){return c.parentNode.querySelector('.risk.caution')});
+  if(!confirm((caution?'This will remove or disable something on this PC.\nIt can be reversed afterwards with "Undo this fix".\n\n':'')+'Apply '+steps.length+' step(s) for:\n'+card.querySelector('h3').textContent+' ?'))return Promise.resolve()}
+ busy[id]=true;var st=document.getElementById('st-'+id),log=document.getElementById('log-'+id);log.classList.add('show');lockCard(card,true);
+ return console.log('demo-only: ', '/api/run?id='+id+'&mode='+mode+'&steps='+steps.join(','),{method:'POST'}).then(function(r){
+  if(!r.job){st.textContent='Error: '+(r.error||'?');st.className='status fail';busy[id]=false;lockCard(card,false);return}
+  return follow(r.job,log,st,mode==='apply'?'Applying':'Simulating').then(function(l){busy[id]=false;lockCard(card,false);
+   if(mode==='apply'&&!FORCED){if(l.ok){st.textContent='Applied'+(l.reboot?' - restart needed':'');st.className='status ok';card.classList.add('ok');card.classList.remove('fail','undone');totals.ok++}
+     else{st.textContent='Finished with errors - see log';st.className='status fail';card.classList.add('fail');totals.fail++}
+     if(l.changes>0){lastJob[id]=r.job;var u=card.querySelector('.undo');u.style.display='';u.textContent='Undo this fix ('+l.changes+' change'+(l.changes==1?'':'s')+')'}}
+   else{st.textContent='Simulated - nothing changed';st.className='status'}
+   sumline();if(document.getElementById('undo-panel').classList.contains('show'))loadUndo()})})}
+function undoJob(card){var id=card.getAttribute('data-id'),job=lastJob[id];if(!job||busy[id])return;
+ if(!confirm('Put back everything this fix changed?\n\n'+card.querySelector('h3').textContent))return;
+ busy[id]=true;lockCard(card,true);var st=document.getElementById('st-'+id),log=document.getElementById('log-'+id);log.classList.add('show');
+ console.log('demo-only: ', '/api/undo?job='+job+'&item='+id,{method:'POST'}).then(function(r){if(!r.job){alert(r.error||'Nothing to undo');busy[id]=false;lockCard(card,false);return}
+  follow(r.job,log,st,'Undoing').then(function(l){busy[id]=false;lockCard(card,false);
+   st.textContent=l.ok?'Undone - back to how it was':'Undo finished with errors - see log';st.className='status '+(l.ok?'':'fail');
+   if(l.ok){card.classList.remove('ok');card.classList.add('undone');card.querySelector('.undo').style.display='none';delete lastJob[id]}
+   if(document.getElementById('undo-panel').classList.contains('show'))loadUndo()})})}
+document.querySelectorAll('.item').forEach(function(card){
+ card.querySelector('.sim').addEventListener('click',function(){run(card,'simulate')});
+ card.querySelector('.apply').addEventListener('click',function(){run(card,'apply')});
+ card.querySelector('.undo').addEventListener('click',function(){undoJob(card)});
+ card.querySelector('.showlog').addEventListener('click',function(){document.getElementById('log-'+card.getAttribute('data-id')).classList.toggle('show')})});
+function seq(cards,mode,safeOnly){var p=Promise.resolve();cards.forEach(function(card){p=p.then(function(){
+  if(safeOnly){card.querySelectorAll('input[data-step]').forEach(function(c){c.checked=!!c.parentNode.querySelector('.risk.safe')&&!c.hasAttribute('data-off')});if(!card.querySelector('input[data-step]:checked'))return}
+  return run(card,mode)})});return p}
+document.getElementById('sim-all').addEventListener('click',function(){run.quiet=true;seq([].slice.call(document.querySelectorAll('.item')),'simulate',false).then(function(){run.quiet=false})});
+document.getElementById('apply-safe').addEventListener('click',function(){if(!confirm('Apply every step marked "safe" (settings-only, all undoable) on all issues?\nSteps that start unticked are skipped.'))return;
+ run.quiet=true;seq([].slice.call(document.querySelectorAll('.item')),'apply',true).then(function(){run.quiet=false})});
+/* ---- undo panel */
+var panel=document.getElementById('undo-panel');
+function loadUndo(){console.log('demo-only: ', '/api/undo/list').then(function(d){var recs=(d.records||[]).slice().sort(function(a,b){return a.time<b.time?1:-1});
+ document.getElementById('undo-store').textContent=d.store?('Stored in '+d.store):'';
+ var open=recs.filter(function(r){return !r.undone&&r.undoable}).length;document.getElementById('undo-toggle').textContent='Undo & restore ('+open+')...';
+ if(!recs.length){document.getElementById('undo-list').innerHTML='<p class="muted">No changes have been made on this PC yet.</p>';return}
+ var h='<table><tr><th>When</th><th>Change</th><th>From fix</th><th></th></tr>',sess=null;
+ recs.forEach(function(r){if(r.session!==sess){sess=r.session;h+='<tr><td colspan="4" class="sess">'+(r.current?'This session':'Session '+esc(r.session))+'</td></tr>'}
+  var act=r.undone?'<span class="muted">undone</span>':(r.undoable?'<button class="ubtn" data-rec="'+esc(r.id)+'">'+(r.legacy?'Restore':'Undo')+'</button>':'<span class="muted" title="'+esc(r.reason)+'">not undoable here</span>');
+  h+='<tr class="'+(r.undone?'done':'')+'"><td>'+esc(r.time.replace('T',' '))+'</td><td>'+esc(r.desc)+(r.undoable||r.undone?'':'<br><span class="muted">'+esc(r.reason)+'</span>')+'</td><td>'+esc(r.item)+'</td><td>'+act+'</td></tr>'});
+ document.getElementById('undo-list').innerHTML=h+'</table>';
+ document.querySelectorAll('#undo-list button[data-rec]').forEach(function(b){b.addEventListener('click',function(){undoRec(b.getAttribute('data-rec'),b)})})})}
+function undoRec(rec,btn){if(!confirm('Undo this change?'))return;btn.disabled=true;var log=document.getElementById('log-undo');log.classList.add('show');
+ console.log('demo-only: ', '/api/undo?rec='+encodeURIComponent(rec),{method:'POST'}).then(function(r){if(!r.job){alert(r.error||'Nothing to undo');btn.disabled=false;return}
+  follow(r.job,log,null,'').then(function(){loadUndo()})})}
+document.getElementById('undo-toggle').addEventListener('click',function(){panel.classList.toggle('show');if(panel.classList.contains('show'))loadUndo()});
+document.getElementById('undo-refresh').addEventListener('click',loadUndo);
+document.getElementById('undo-session').addEventListener('click',function(){if(!confirm('Undo EVERY change made in this session, newest first?'))return;var log=document.getElementById('log-undo');log.classList.add('show');
+ console.log('demo-only: ', '/api/undo?scope=session',{method:'POST'}).then(function(r){if(!r.job){alert(r.error||'Nothing to undo');return}follow(r.job,log,null,'').then(function(){loadUndo();
+  document.querySelectorAll('.item.ok').forEach(function(c){c.classList.remove('ok');c.classList.add('undone');c.querySelector('.undo').style.display='none'})})})});
+document.getElementById('rstrui').addEventListener('click',function(){if(confirm('Open Windows System Restore?\n(Choosing a restore point undoes ALL changes since then, including ones not made by this tool, and restarts the PC.)'))console.log('demo-only: ', '/api/open?what=rstrui',{method:'POST'})});
+document.getElementById('finish').addEventListener('click',function(){if(!confirm('Close the Repair Console?\nYou can reopen it any time with RUN-REPAIRS.cmd - the Undo history stays.'))return;
+ console.log('demo-only: ', '/api/finish',{method:'POST'}).then(function(r){if(r.busy){if(!confirm('"'+r.title+'" is still running. Close anyway? (A running DISM/SFC keeps going in the background.)'))return;return console.log('demo-only: ', '/api/finish?force=1',{method:'POST'})}return r}).then(function(r){if(r&&r.ok)document.body.innerHTML='<main class="wrap"><h2>Repair Console closed.</h2><p>Re-run START-SCAN.cmd to verify the fixes. To undo anything later, open RUN-REPAIRS.cmd again and use Undo &amp; restore.</p></main>'})});
+loadUndo();
+})();</script></body></html>

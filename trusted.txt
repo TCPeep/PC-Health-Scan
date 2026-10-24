@@ -1,0 +1,11 @@
+# PC Health Scan - programs you have checked and trust.
+# Anything listed here is NOT flagged by the scan (it is still listed under "Informational notes"
+# so nothing is hidden silently). The Repair Console's "trust it" step adds lines here for you.
+#
+#   path   <full path to the program, * and ? wildcards allowed>
+#   sha256 <file hash>                 (exact build only - changes with every update)
+#   signer <exact certificate name>    (only used when the signature is valid)
+#
+# Examples:
+#   path C:\Users\*\AppData\Local\Programs\MyTool\MyTool.exe
+#   signer Contoso Ltd

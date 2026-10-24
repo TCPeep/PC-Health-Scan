@@ -1,0 +1,5 @@
+* text=auto
+# cmd.exe mis-reads labels (goto/call) in LF-only batch files
+*.cmd text eol=crlf
+*.png binary
+*.gif binary

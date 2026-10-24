@@ -1,0 +1,34 @@
+PC Health Scan
+Copyright (C) 2026 TCPeep <https://github.com/TCPeep>
+https://github.com/TCPeep/PC-Health-Scan
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License version 3 as published by the Free
+Software Foundation (see LICENSE), together with the additional terms below.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+The Repair Console changes Windows settings and removes programs. You use it at
+your own risk; read docs/safety.md first.
+
+
+ADDITIONAL TERMS (GNU GPL version 3, section 7)
+-----------------------------------------------
+
+As permitted by section 7(b) and 7(c) of the GNU GPL version 3, the following
+additional terms apply to this program and to every work based on it:
+
+1. Keep the credit (section 7(b)).
+   Every copy or modified version you convey must keep, unchanged and readable:
+     a) the copyright header at the top of each source file and this NOTICE file;
+     b) the credit "PC Health Scan ... by TCPeep" and "github.com/TCPeep/PC-Health-Scan"
+        in the footer of the HTML report, the footer of the Repair Console page
+        and the scan's start-up banner (the program's Appropriate Legal Notices).
+   You may add your own name next to it, for example
+   "Modified by <you>, based on PC Health Scan by TCPeep".
+
+2. Don't present it as your own (section 7(c)).
+   You may not misrepresent the origin of this program or claim it as your own
+   original work. A modified version must be clearly marked as modified and must
+   not be presented as the original PC Health Scan.

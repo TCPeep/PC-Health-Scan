@@ -1,0 +1,58 @@
+name: Deploy sample pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scanner/**'
+      - 'scripts/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render sample pages
+        shell: powershell
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Build-DemoReport.ps1
+          powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Build-DemoRepairPage.ps1
+      - name: Prepare site
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path _site/samples -Force | Out-Null
+          Copy-Item samples/*.html _site/samples/
+          Set-Content _site/index.html @'
+          <!doctype html><meta charset=utf-8><title>PC Health Scan - samples</title>
+          <style>body{font:16px/1.5 system-ui;max-width:600px;margin:40px auto;padding:0 16px}a{color:#2563eb}</style>
+          <h1>PC Health Scan sample pages</h1>
+          <p>These are rendered from fake findings; no real PC was scanned.</p>
+          <ul>
+            <li><a href="samples/PC-Health-Report_sample.html">Sample report</a></li>
+            <li><a href="samples/Repair-Console_sample.html">Sample Repair Console</a> (buttons are decorative)</li>
+          </ul>
+          <p><a href="https://github.com/TCPeep/PC-Health-Scan">Back to the repo</a></p>
+          '@
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse every PowerShell file
+        shell: pwsh
+        run: |
+          $bad = 0
+          Get-ChildItem -Recurse -Filter *.ps1 | ForEach-Object {
+            $t=$null;$e=$null
+            [void][System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$t,[ref]$e)
+            if($e.Count){ $bad++; "PARSE ERROR $($_.Name): $($e[0].Message)" | Write-Error }
+          }
+          if ($bad) { exit 1 }
+
+      - name: Lint with PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -ErrorAction Stop
+          $r = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error -ExcludeRule PSAvoidUsingWriteHost,PSUseShouldProcessForStateChangingFunctions,PSUseSingularNouns
+          if ($r) { $r | Format-Table | Out-String | Write-Error; exit 1 }
+
+      - name: Repair-engine self-test (apply + undo round trip, cannot end any program)
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File dev\repair-selftest.ps1
+
+      - name: AMSI check (Defender must not block any script)
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File dev\amsi-check.ps1
+
+      - name: Render sample report
+        shell: powershell
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Build-DemoReport.ps1
+          powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Build-DemoRepairPage.ps1
+
+      - name: Upload sample pages
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-pages
+          path: samples/*.html

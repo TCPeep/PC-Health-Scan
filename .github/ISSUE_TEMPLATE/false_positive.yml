@@ -1,0 +1,27 @@
+name: False positive
+description: The scan flagged something that is actually legitimate.
+labels: [false-positive]
+body:
+  - type: input
+    attributes:
+      label: The finding title
+      placeholder: 'e.g. "Scheduled task Foo runs an unsigned program"'
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What was actually flagged (program, task, extension, &hellip;)
+      description: Full path, publisher, where you got it from.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Why you believe it is legitimate
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: PC Health Scan version
+      placeholder: 1.0.0
+    validations:
+      required: true
